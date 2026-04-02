@@ -326,7 +326,7 @@ with tab1:
 # ═══════════════════════════════════════════════════════════════
 with tab2:
     st.markdown("### ⚡ Smart Match")
-    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Paste a job requirement — Claude will rank all available candidates by fit score, with reasoning and risk flags.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Paste a job requirement — Groq will rank all available candidates by fit score, with reasoning and risk flags.</p>', unsafe_allow_html=True)
     st.markdown("")
 
     jd_input = st.text_area(
@@ -419,7 +419,7 @@ Return top 4 matches as JSON:
 # ═══════════════════════════════════════════════════════════════
 with tab3:
     st.markdown("### ✉ Outreach Generator")
-    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Select a warm or cold candidate, describe the opportunity, and Claude will write a personalized re-engagement email in seconds.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Select a warm or cold candidate, describe the opportunity, and Groq will write a personalized re-engagement email in seconds.</p>', unsafe_allow_html=True)
     st.markdown("")
 
     reengageable = [c for c in CANDIDATES if c["status"] != "active"]
