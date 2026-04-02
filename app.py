@@ -1,5 +1,5 @@
 import streamlit as st
-import anthropic
+from groq import Groq
 import json
 import pandas as pd
 import plotly.express as px
@@ -203,7 +203,7 @@ with st.sidebar:
         <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#3B82F6,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">⚡</div>
         <div>
             <div style="font-size:17px;font-weight:800;color:#F0F4FF;line-height:1;letter-spacing:-0.02em;">PipelineAI</div>
-            <div style="font-size:10px;color:#7B90AC;letter-spacing:0.05em;text-transform:uppercase;">Powered by Claude</div>
+            <div style="font-size:10px;color:#7B90AC;letter-spacing:0.05em;text-transform:uppercase;">Powered by Groq + Llama</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -212,9 +212,9 @@ with st.sidebar:
     st.markdown("---")
 
     api_key = st.text_input(
-        "Anthropic API Key",
+        "Groq API Key",
         type="password",
-        placeholder="sk-ant-...",
+        placeholder="gsk_...",
         help="Required for Smart Match and Outreach Generator tabs.",
     )
 
@@ -225,7 +225,7 @@ with st.sidebar:
     st.markdown("- ⚡ **Smart Match** — AI ranks candidates for any job req")
     st.markdown("- ✉ **Outreach Gen** — Personalized re-engagement emails")
     st.markdown("---")
-    st.markdown('<p style="font-size:11px;color:#3B4D63;">Built with Claude · Anthropic API</p>', unsafe_allow_html=True)
+    st.markdown('<p style="font-size:11px;color:#3B4D63;">Built with Groq · llama-3.3-70b-versatile</p>', unsafe_allow_html=True)
 
 # ─── TABS ─────────────────────────────────────────────────────
 tab1, tab2, tab3 = st.tabs(["  📊  Dashboard  ", "  ⚡  Smart Match  ", "  ✉  Outreach Generator  "])
@@ -335,7 +335,7 @@ with tab2:
 
     if run_match:
         if not api_key:
-            st.error("Please enter your Anthropic API Key in the sidebar to use this feature.")
+            st.error("Please enter your Groq API Key in the sidebar to use this feature.")
         else:
             pool      = [c for c in CANDIDATES if c["status"] != "active"]
             summaries = "\n".join(
@@ -354,15 +354,15 @@ AVAILABLE CANDIDATES (not currently placed):
 Return top 4 matches as JSON:
 [{{"id": number, "score": 0-100, "label": "Strong Match" | "Good Match" | "Partial Match", "reason": "One concise sentence on fit.", "gap": "One sentence on any concern or gap."}}]"""
 
-            with st.spinner("Analyzing candidates with Claude..."):
+            with st.spinner("Analyzing candidates with Groq + Llama..."):
                 try:
-                    client  = anthropic.Anthropic(api_key=api_key)
-                    message = client.messages.create(
-                        model="claude-sonnet-4-5-20251001",
+                    client   = Groq(api_key=api_key)
+                    response = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
                         max_tokens=1000,
                         messages=[{"role": "user", "content": prompt}],
                     )
-                    raw     = message.content[0].text.strip()
+                    raw     = response.choices[0].message.content.strip()
                     clean   = raw.replace("```json", "").replace("```", "").strip()
                     results = json.loads(clean)
 
@@ -403,8 +403,14 @@ Return top 4 matches as JSON:
 
                 except json.JSONDecodeError:
                     st.error("Claude returned an unexpected format. Please try again.")
-                except anthropic.AuthenticationError:
-                    st.error("Invalid API key. Please check your Anthropic API key in the sidebar.")
+                except Exception as auth_err:
+                    if "auth" in str(auth_err).lower() or "invalid" in str(auth_err).lower():
+                        st.error("Invalid API key. Please check your Groq API key in the sidebar.")
+                    else:
+                        raise
+except Exception as e:
+                    st.error(f"Error: {str(e)}")
+                    st.error("Invalid Groq API key. Please check your key in the sidebar.")
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
 
@@ -466,7 +472,7 @@ with tab3:
 
     if gen_btn:
         if not api_key:
-            st.error("Please enter your Anthropic API Key in the sidebar to use this feature.")
+            st.error("Please enter your Groq API Key in the sidebar to use this feature.")
         else:
             prompt = f"""You are a recruiter at ExecuSource, a top Atlanta staffing firm known for genuine, relationship-first recruiting. Write a short, warm re-engagement email to this IT professional. Under 140 words. Human and direct, not salesy. Reference their specific background naturally.
 
@@ -482,15 +488,15 @@ OPPORTUNITY:
 
 Write ONLY the email body. No subject line. No markdown."""
 
-            with st.spinner("Writing personalized email with Claude..."):
+            with st.spinner("Writing personalized email with Groq + Llama..."):
                 try:
-                    client  = anthropic.Anthropic(api_key=api_key)
-                    message = client.messages.create(
-                        model="claude-sonnet-4-5-20251001",
+                    client   = Groq(api_key=api_key)
+                    response = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
                         max_tokens=600,
                         messages=[{"role": "user", "content": prompt}],
                     )
-                    email_text = message.content[0].text.strip()
+                    email_text = response.choices[0].message.content.strip()
 
                     st.markdown("")
                     st.markdown('<div class="section-label">Generated Email</div>', unsafe_allow_html=True)
@@ -498,7 +504,13 @@ Write ONLY the email body. No subject line. No markdown."""
                     st.markdown("")
                     st.code(email_text, language=None)  # easy copy-paste fallback
 
-                except anthropic.AuthenticationError:
-                    st.error("Invalid API key. Please check your Anthropic API key in the sidebar.")
+                except Exception as auth_err:
+                    if "auth" in str(auth_err).lower() or "invalid" in str(auth_err).lower():
+                        st.error("Invalid API key. Please check your Groq API key in the sidebar.")
+                    else:
+                        raise
+except Exception as e:
+                    st.error(f"Error: {str(e)}")
+                    st.error("Invalid Groq API key. Please check your key in the sidebar.")
                 except Exception as e:
                     st.error(f"Error: {str(e)}")
