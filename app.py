@@ -407,17 +407,12 @@ Return top 4 matches as JSON:
                             st.markdown(f'<div style="text-align:center;margin-top:10px;"><div class="{css_cls}">{r["score"]}</div><div style="font-size:9px;color:#7B90AC;text-transform:uppercase;letter-spacing:0.05em;margin-top:2px;">score</div></div>', unsafe_allow_html=True)
 
                 except json.JSONDecodeError:
-                    st.error("Claude returned an unexpected format. Please try again.")
-                except Exception as auth_err:
-                    if "auth" in str(auth_err).lower() or "invalid" in str(auth_err).lower():
-                        st.error("Invalid API key. Please check your Groq API key in the sidebar.")
-                    else:
-                        raise
-except Exception as e:
-                    st.error(f"Error: {str(e)}")
-                    st.error("Invalid Groq API key. Please check your key in the sidebar.")
+                    st.error("Groq returned an unexpected format. Please try again.")
                 except Exception as e:
-                    st.error(f"Error: {str(e)}")
+                    if "auth" in str(e).lower() or "401" in str(e):
+                        st.error("Invalid Groq API key. Please check your key in the sidebar.")
+                    else:
+                        st.error(f"Error: {str(e)}")
 
 # ═══════════════════════════════════════════════════════════════
 # TAB 3 — OUTREACH GENERATOR
@@ -509,13 +504,8 @@ Write ONLY the email body. No subject line. No markdown."""
                     st.markdown("")
                     st.code(email_text, language=None)  # easy copy-paste fallback
 
-                except Exception as auth_err:
-                    if "auth" in str(auth_err).lower() or "invalid" in str(auth_err).lower():
-                        st.error("Invalid API key. Please check your Groq API key in the sidebar.")
-                    else:
-                        raise
-except Exception as e:
-                    st.error(f"Error: {str(e)}")
-                    st.error("Invalid Groq API key. Please check your key in the sidebar.")
                 except Exception as e:
-                    st.error(f"Error: {str(e)}")
+                    if "auth" in str(e).lower() or "401" in str(e):
+                        st.error("Invalid Groq API key. Please check your key in the sidebar.")
+                    else:
+                        st.error(f"Error: {str(e)}")
