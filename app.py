@@ -211,12 +211,17 @@ with st.sidebar:
     st.markdown('<span style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);color:#93C5FD;border-radius:20px;padding:3px 12px;font-size:11px;font-weight:700;letter-spacing:0.04em;">EXECUSOURCE DEMO v1.0</span>', unsafe_allow_html=True)
     st.markdown("---")
 
-    api_key = st.text_input(
-        "Groq API Key",
-        type="password",
-        placeholder="gsk_...",
-        help="Required for Smart Match and Outreach Generator tabs.",
-    )
+    _secret_key = st.secrets.get("GROQ_API_KEY", "")
+    if _secret_key:
+        api_key = _secret_key
+        st.success("\u2713 API key loaded from secrets", icon="\U0001f511")
+    else:
+        api_key = st.text_input(
+            "Groq API Key",
+            type="password",
+            placeholder="gsk_...",
+            help="Or set GROQ_API_KEY in .streamlit/secrets.toml",
+        )
 
     st.markdown("---")
     st.markdown("**About this tool**")
