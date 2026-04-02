@@ -232,6 +232,67 @@ with st.sidebar:
     st.markdown("---")
     st.markdown('<p style="font-size:11px;color:#3B4D63;">Built with Groq · llama-3.3-70b-versatile</p>', unsafe_allow_html=True)
 
+# ─── EXPLAINER ───────────────────────────────────────────────
+with st.expander("💡 What does this tool do?", expanded=False):
+    st.markdown("""
+    <div style="padding: 4px 0;">
+        <p style="font-size:15px;font-weight:700;color:#F0F4FF;margin-bottom:6px;">PipelineAI — AI-powered IT recruiter tool for ExecuSource</p>
+        <p style="font-size:13px;color:#94A3B8;line-height:1.7;margin-bottom:16px;">
+            ExecuSource builds its edge on relationships — but the underlying pipeline infrastructure is under pressure in 2026.
+            Permanent IT hiring cooled in 2025, AI-equipped competitors are sourcing faster, and candidate ghosting is rising.
+            This tool plugs directly into that gap across three modules:
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_a, col_b, col_c = st.columns(3)
+    with col_a:
+        st.markdown("""
+        <div style="background:#0F1624;border:1px solid #1C2A3E;border-top:3px solid #3B82F6;border-radius:10px;padding:16px;">
+            <div style="font-size:20px;margin-bottom:8px;">📊</div>
+            <div style="font-size:13px;font-weight:700;color:#F0F4FF;margin-bottom:6px;">Dashboard</div>
+            <div style="font-size:12px;color:#94A3B8;line-height:1.6;">
+                See your entire IT candidate pool at a glance — pipeline health metrics,
+                skill distribution charts, and a full candidate table with status, rate, and location.
+                Know instantly who is placed, who is warm, and who needs outreach.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_b:
+        st.markdown("""
+        <div style="background:#0F1624;border:1px solid #1C2A3E;border-top:3px solid #F59E0B;border-radius:10px;padding:16px;">
+            <div style="font-size:20px;margin-bottom:8px;">⚡</div>
+            <div style="font-size:13px;font-weight:700;color:#F0F4FF;margin-bottom:6px;">Smart Match</div>
+            <div style="font-size:12px;color:#94A3B8;line-height:1.6;">
+                Paste any job requirement and the AI instantly scores and ranks every available candidate
+                by fit (0–100), explains why each is a match, and flags any skill gaps or risks —
+                cutting manual shortlisting time from hours to seconds.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col_c:
+        st.markdown("""
+        <div style="background:#0F1624;border:1px solid #1C2A3E;border-top:3px solid #8B5CF6;border-radius:10px;padding:16px;">
+            <div style="font-size:20px;margin-bottom:8px;">✉</div>
+            <div style="font-size:13px;font-weight:700;color:#F0F4FF;margin-bottom:6px;">Outreach Generator</div>
+            <div style="font-size:12px;color:#94A3B8;line-height:1.6;">
+                Select any warm or cold candidate, describe the opportunity,
+                and the AI writes a short, personalized re-engagement email using their actual
+                background and skills — not a template. Reduces ghosting and saves 10–15 min per outreach.
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:8px;padding:12px 16px;">
+        <span style="font-size:12px;color:#93C5FD;">
+        🔑 &nbsp;<strong>Smart Match</strong> and <strong>Outreach Generator</strong> require a Groq API key — enter it in the sidebar or set
+        <code>GROQ_API_KEY</code> in <code>.streamlit/secrets.toml</code>. The Dashboard works without a key.
+        </span>
+    </div>
+    """, unsafe_allow_html=True)
+
 # ─── TABS ─────────────────────────────────────────────────────
 tab1, tab2, tab3 = st.tabs(["  📊  Dashboard  ", "  ⚡  Smart Match  ", "  ✉  Outreach Generator  "])
 
@@ -326,7 +387,7 @@ with tab1:
 # ═══════════════════════════════════════════════════════════════
 with tab2:
     st.markdown("### ⚡ Smart Match")
-    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Paste a job requirement — Groq will rank all available candidates by fit score, with reasoning and risk flags.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Paste a job requirement — Claude will rank all available candidates by fit score, with reasoning and risk flags.</p>', unsafe_allow_html=True)
     st.markdown("")
 
     jd_input = st.text_area(
@@ -419,7 +480,7 @@ Return top 4 matches as JSON:
 # ═══════════════════════════════════════════════════════════════
 with tab3:
     st.markdown("### ✉ Outreach Generator")
-    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Select a warm or cold candidate, describe the opportunity, and Groq will write a personalized re-engagement email in seconds.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#7B90AC;font-size:13px;margin-top:-8px;">Select a warm or cold candidate, describe the opportunity, and Claude will write a personalized re-engagement email in seconds.</p>', unsafe_allow_html=True)
     st.markdown("")
 
     reengageable = [c for c in CANDIDATES if c["status"] != "active"]
